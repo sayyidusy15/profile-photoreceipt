@@ -94,14 +94,8 @@ export function RentalMenu({ configurationId, onConfigurationChange }: RentalMen
           <div className="rentalIntro">
             <p className="rentalEyebrow">#006 / RENTAL MENU</p>
             <div className="rentalIntroRow">
-              <div>
-                <h2 id="rental-menu-title" tabIndex={-1}>Bawa Lyven<br />ke tempatmu.</h2>
-                <p>Pilih durasi sewa dan konfigurasi yang sesuai.</p>
-              </div>
-              <aside className="rentalDemoNote">
-                <strong>Harga dan isi paket masih demo.</strong>
-                <span>Ini adalah estimasi untuk kebutuhan referensi. Harga dan isi paket dapat berubah mengikuti kebutuhan dan lokasi.</span>
-              </aside>
+              <h2 id="rental-menu-title" tabIndex={-1}>Bawa Lyven<br />ke tempatmu.</h2>
+              <p>Pilih durasi sewa dan konfigurasi yang sesuai.</p>
             </div>
           </div>
 
