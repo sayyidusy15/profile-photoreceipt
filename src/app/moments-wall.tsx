@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 
 type MomentKind = "landscape" | "portrait" | "square" | "receipt";
 
@@ -94,12 +96,26 @@ function Doodles() {
   );
 }
 
-function MomentCard({ item }: { item: MomentItem }) {
+function MomentCard({
+  item,
+  rowIndex,
+  itemIndex,
+}: {
+  item: MomentItem;
+  rowIndex: number;
+  itemIndex: number;
+}) {
   const style = { "--rotation": `${item.rotation}deg` } as CSSProperties;
   const isReceipt = item.kind === "receipt";
 
   return (
-    <div className={`momentItem ${item.kind}`} style={style}>
+    <div
+      className={`momentItem ${item.kind}`}
+      data-moment-item
+      data-row={rowIndex}
+      data-index={itemIndex}
+      style={style}
+    >
       <span className="momentClip" aria-hidden="true" />
       <div className={`momentCard ${isReceipt ? "receiptMomentCard" : "photoMomentCard"}`}>
         <div className="momentMedia">
@@ -124,8 +140,72 @@ function MomentCard({ item }: { item: MomentItem }) {
 }
 
 export function MomentsWall() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (!section || reduceMotion.matches) return;
+
+    const rows = Array.from(section.querySelectorAll<HTMLElement>(".momentRow"));
+    let animationFrame = 0;
+
+    const clamp = (value: number) => Math.min(1, Math.max(0, value));
+
+    const updateMoments = () => {
+      const viewportHeight = window.innerHeight;
+      const travelDistance = window.innerWidth <= 560 ? 34 : window.innerWidth <= 999 ? 72 : 116;
+
+      rows.forEach((row, rowIndex) => {
+        const rowRect = row.getBoundingClientRect();
+        const start = viewportHeight * 0.94;
+        const end = viewportHeight * 0.3;
+        const rowProgress = clamp((start - rowRect.top) / (start - end));
+        const items = Array.from(row.querySelectorAll<HTMLElement>("[data-moment-item]"));
+
+        items.forEach((item, itemIndex) => {
+          const order = rowIndex === 0 ? itemIndex : items.length - 1 - itemIndex;
+          const progress = clamp(rowProgress * 1.65 - order * 0.32);
+          const direction = rowIndex === 0 ? -1 : 1;
+          const x = (1 - progress) * direction * travelDistance;
+          const y = Math.sin(progress * Math.PI) * 16 - (1 - progress) * 20;
+          const scale = 0.95 + progress * 0.05;
+
+          item.style.setProperty("--reveal-x", `${x.toFixed(2)}px`);
+          item.style.setProperty("--reveal-y", `${y.toFixed(2)}px`);
+          item.style.setProperty("--reveal-scale", scale.toFixed(3));
+          item.style.setProperty("--reveal-opacity", clamp(progress * 1.8).toFixed(3));
+        });
+      });
+
+      animationFrame = 0;
+    };
+
+    const requestUpdate = () => {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(updateMoments);
+    };
+
+    section.classList.add("isScrollAnimated");
+    updateMoments();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      section.classList.remove("isScrollAnimated");
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
   return (
-    <section className="momentsWall" id="galeri" aria-labelledby="moments-title">
+    <section
+      ref={sectionRef}
+      className="momentsWall"
+      id="galeri"
+      aria-labelledby="moments-title"
+    >
       <div className="momentsIntro">
         <p className="momentsEyebrow">#004 / THE MOMENTS WALL</p>
         <h2 id="moments-title" tabIndex={-1}>
@@ -140,8 +220,13 @@ export function MomentsWall() {
           <div className={`momentRow momentRow${rowIndex + 1}`} key={`row-${rowIndex + 1}`}>
             <Rope />
             <div className="momentGrid">
-              {row.map((item) => (
-                <MomentCard item={item} key={item.id} />
+              {row.map((item, itemIndex) => (
+                <MomentCard
+                  item={item}
+                  itemIndex={itemIndex}
+                  key={item.id}
+                  rowIndex={rowIndex}
+                />
               ))}
             </div>
           </div>
