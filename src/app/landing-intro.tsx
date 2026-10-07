@@ -4,10 +4,14 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { HowItWorks } from "./how-it-works";
 import { MomentsWall } from "./moments-wall";
+import { LyvenInMotion } from "./lyven-in-motion";
 import { FrameCollection } from "./frame-collection";
 import { RentalMenu } from "./rental-menu";
 import { FaqSection } from "./faq-section";
 import { FinalCtaFooter } from "./final-cta-footer";
+import { CrossingRibbons } from "./crossing-ribbons";
+import { ServiceArea } from "./service-area";
+import { RentalSteps } from "./rental-steps";
 import "./landing.css";
 
 const styles = {
@@ -45,6 +49,11 @@ const styles = {
   configurationSelector: "configurationSelector",
   selectorOptions: "selectorOptions",
   setupGallery: "setupGallery",
+  setupStackContainer: "setupStackContainer",
+  setupStackCard: "setupStackCard",
+  setupStackCard1: "setupStackCard1",
+  setupStackCard2: "setupStackCard2",
+  setupStackCard3: "setupStackCard3",
   setupMainVisual: "setupMainVisual",
   setupDetails: "setupDetails",
   setupDetailVisual: "setupDetailVisual",
@@ -59,6 +68,11 @@ const styles = {
 const navigation = ["Produk", "Galeri", "Frame", "Paket", "FAQ"];
 
 const equipment = ["Tablet", "Printer", "Box", "Stand", "Perlengkapan pendukung"];
+
+const heroRibbonFront = ["FOTO DULU", "SENYUM BARENG", "CETAK MOMENNYA", "BAWA PULANG KENANGANNYA"];
+const heroRibbonBack = ["Momen kecil, kenangan berarti", "Satu foto, banyak cerita", "Kenangan yang dibawa pulang", "Simpan senyumnya"];
+const faqRibbonFront = ["CAFÉ", "EVENT", "RUANG KREATIF", "PHOTO RECEIPT BY LYVEN"];
+const faqRibbonBack = ["Bikin sudutmu lebih berkesan", "Rayakan cerita bersama", "Cetak cerita hari ini", "Bawa pulang momen kecil"];
 
 type ConfigurationId = "vertical" | "landscape";
 
@@ -295,23 +309,33 @@ export function LandingIntro() {
         <HeroVisual />
       </section>
 
+      <CrossingRibbons
+        label="Pesan Photo Receipt"
+        frontPhrases={heroRibbonFront}
+        backPhrases={heroRibbonBack}
+        frontDuration={68}
+        backDuration={82}
+      />
+
       <section className={styles.productSetup} id="produk" aria-labelledby="setup-title">
         <div className={styles.setupGallery} aria-live="polite">
-          <SetupMedia
-            image={configuration.fullSetup}
-            className={styles.setupMainVisual}
-            sizes="(max-width: 999px) calc(100vw - 40px), 600px"
-            configuration={configuration.label}
-          />
-          <div className={styles.setupDetails}>
-            {configuration.details.map((detail) => (
-              <SetupMedia
-                key={`${configuration.id}-${detail.label}`}
-                image={detail}
-                className={styles.setupDetailVisual}
-                sizes="(max-width: 560px) calc(50vw - 28px), 290px"
-              />
-            ))}
+          <div className={styles.setupStackContainer}>
+            <SetupMedia
+              image={configuration.fullSetup}
+              className={`${styles.setupStackCard} ${styles.setupStackCard1}`}
+              sizes="(max-width: 999px) calc(100vw - 40px), 480px"
+              configuration={configuration.label}
+            />
+            <SetupMedia
+              image={configuration.details[0]}
+              className={`${styles.setupStackCard} ${styles.setupStackCard2}`}
+              sizes="(max-width: 999px) calc(50vw - 20px), 320px"
+            />
+            <SetupMedia
+              image={configuration.details[1]}
+              className={`${styles.setupStackCard} ${styles.setupStackCard3}`}
+              sizes="(max-width: 999px) calc(50vw - 20px), 320px"
+            />
           </div>
         </div>
 
@@ -356,8 +380,18 @@ export function LandingIntro() {
 
       <HowItWorks />
       <MomentsWall />
+      {/* <LyvenInMotion /> */}
       <FrameCollection />
       <RentalMenu configurationId={configurationId} onConfigurationChange={setConfigurationId} />
+      <ServiceArea />
+      <RentalSteps />
+      <CrossingRibbons
+        label="Photo Receipt untuk berbagai ruang dan acara"
+        frontPhrases={faqRibbonFront}
+        backPhrases={faqRibbonBack}
+        frontDuration={50}
+        backDuration={78}
+      />
       <FaqSection />
       <FinalCtaFooter />
 
