@@ -27,7 +27,7 @@ const faqItems = [
   {
     id: "rent",
     question: "Bagaimana cara mulai sewa?",
-    answer: "Pilih paket dan konfigurasi unit pada section Paket, lalu hubungi Lyven untuk mendiskusikan kebutuhan dan ketersediaannya.",
+    answer: "Pilih paket dan konfigurasi unit pada section Paket, lalu ikuti alur pada section Cara Sewa untuk mendiskusikan kebutuhan, ketersediaan, serta ketentuan DP dan pelunasan bersama Lyven.",
   },
 ] as const;
 
