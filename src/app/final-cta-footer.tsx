@@ -63,8 +63,10 @@ export function FinalCtaFooter() {
           <p className="finalCtaEyebrow">#009 / LET’S MAKE MEMORIES</p>
           <h2 id="final-cta-title">Siap bikin sudutmu<br />lebih berkesan?</h2>
           <p>Bawa Photo Receipt by Lyven ke café, event, atau ruang kreatifmu.</p>
-          <button type="button" onClick={handleContact}>Tanya Sewa <span aria-hidden="true">→</span></button>
-          <a href="#paket" onClick={(event) => scrollToAnchor(event, "#paket")}>Lihat Paket</a>
+          <div className="finalCtaActions">
+            <button type="button" onClick={handleContact}>Tanya Sewa <span aria-hidden="true">→</span></button>
+            <a href="#paket" onClick={(event) => scrollToAnchor(event, "#paket")}>Lihat Paket</a>
+          </div>
         </div>
       </section>
 
